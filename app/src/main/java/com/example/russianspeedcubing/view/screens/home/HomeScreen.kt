@@ -1,14 +1,8 @@
 package com.example.russianspeedcubing.view.screens.home
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +25,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -46,6 +38,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.russianspeedcubing.R
 import com.example.russianspeedcubing.model.application.Competition
+import com.example.russianspeedcubing.view.items.ContainerShadow
+import com.example.russianspeedcubing.view.screens.competition.CompetitionViewModel
 import com.example.russianspeedcubing.view.theme.robotoCondensed
 import com.example.russianspeedcubing.view.theme.robotoSlab
 import com.example.russianspeedcubing.view.theme.spaceMono
@@ -55,6 +49,7 @@ import com.example.russianspeedcubing.view.theme.spaceMono
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel,
+    competitionViewModel: CompetitionViewModel,
     colorScheme: ColorScheme
 ) {
     val pullRefreshState = rememberPullRefreshState(
@@ -90,7 +85,13 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.height(32.dp))
                     for ((i, competition) in viewModel.competitions.current.withIndex()) {
-                        CurrentCompetition(competition, i, navController, colorScheme)
+                        CurrentCompetition(
+                            competition,
+                            i,
+                            navController,
+                            colorScheme,
+                            competitionViewModel
+                        )
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
@@ -116,7 +117,13 @@ fun HomeScreen(
                 ) {
                     Spacer(Modifier.width(20.dp))
                     for ((i, competition) in viewModel.competitions.upcoming.withIndex()) {
-                        UpcomingCompetition(competition, i, navController, colorScheme)
+                        UpcomingCompetition(
+                            competition,
+                            i,
+                            navController,
+                            colorScheme,
+                            competitionViewModel
+                        )
                         Spacer(Modifier.width(20.dp))
                     }
                 }
@@ -134,7 +141,7 @@ fun HomeScreen(
                 )
                 Spacer(Modifier.height(16.dp))
                 for (competition in viewModel.competitions.past) {
-                    PastCompetition(competition, navController, colorScheme)
+                    PastCompetition(competition, navController, colorScheme, competitionViewModel)
                     Spacer(modifier = Modifier.height(28.dp))
                 }
             }
@@ -152,20 +159,15 @@ fun CurrentCompetition(
     competition: Competition,
     number: Int,
     navController: NavHostController,
-    colorScheme: ColorScheme
+    colorScheme: ColorScheme,
+    competitionViewModel: CompetitionViewModel
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val padding by animateDpAsState(
-        targetValue = if (isPressed) 0.dp else 3.dp, label = "",
-        animationSpec = tween(durationMillis = 100)
-    )
-    Box(
-        Modifier
-            .background(colorScheme.outline, RoundedCornerShape(40.dp))
-            .padding(bottom = padding)
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(40.dp))
-            .clickable(interactionSource = interactionSource, null) { }
+    ContainerShadow(
+        competition,
+        navController,
+        competitionViewModel,
+        colorScheme,
+        true
     ) {
         Column(
             modifier = Modifier
@@ -220,7 +222,6 @@ fun CurrentCompetition(
             }
         }
     }
-    Spacer(modifier = Modifier.height(3.dp - padding))
 }
 
 @Composable
@@ -228,20 +229,15 @@ fun UpcomingCompetition(
     competition: Competition,
     number: Int,
     navController: NavHostController,
-    colorScheme: ColorScheme
+    colorScheme: ColorScheme,
+    competitionViewModel: CompetitionViewModel
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val padding by animateDpAsState(
-        targetValue = if (isPressed) 0.dp else 3.dp, label = "",
-        animationSpec = tween(durationMillis = 100)
-    )
-    Box(
-        Modifier
-            .background(colorScheme.outline, RoundedCornerShape(40.dp))
-            .padding(bottom = padding)
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(40.dp))
-            .clickable(interactionSource = interactionSource, null) { }
+    ContainerShadow(
+        competition,
+        navController,
+        competitionViewModel,
+        colorScheme,
+        false
     ) {
         Column(
             modifier = Modifier
@@ -289,20 +285,15 @@ fun UpcomingCompetition(
 fun PastCompetition(
     competition: Competition,
     navController: NavHostController,
-    colorScheme: ColorScheme
+    colorScheme: ColorScheme,
+    competitionViewModel: CompetitionViewModel
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val padding by animateDpAsState(
-        targetValue = if (isPressed) 0.dp else 3.dp, label = "",
-        animationSpec = tween(durationMillis = 100)
-    )
-    Box(
-        Modifier
-            .background(colorScheme.outline, RoundedCornerShape(40.dp))
-            .padding(bottom = padding)
-            .border(1.dp, colorScheme.outline, RoundedCornerShape(40.dp))
-            .clickable(interactionSource = interactionSource, null) { }
+    ContainerShadow(
+        competition,
+        navController,
+        competitionViewModel,
+        colorScheme,
+        true
     ) {
         Row(
             modifier = Modifier
@@ -324,5 +315,5 @@ fun PastCompetition(
             )
         }
     }
-    Spacer(modifier = Modifier.height(3.dp - padding))
 }
+

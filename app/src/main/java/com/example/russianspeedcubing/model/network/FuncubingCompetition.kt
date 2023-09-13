@@ -41,8 +41,8 @@ data class FuncubingCompetition(
             startDateSplit[0],
             city,
             website,
-            organizers.joinToString(",") { it.name },
-            delegates.joinToString(",") { it.name },
+            organizers.joinToString(", ") { it.name },
+            delegates.joinToString(", ") { it.name },
             if (competitor_limit == 0) competitors_count
             else "$competitors_count / $competitor_limit",
             logo,

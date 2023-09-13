@@ -3,6 +3,7 @@ package com.example.russianspeedcubing.data.repository
 import com.example.russianspeedcubing.data.services.FuncubingService
 import com.example.russianspeedcubing.model.application.Competition
 import com.example.russianspeedcubing.model.application.Competitions
+import org.jsoup.Jsoup
 import java.time.LocalDate
 
 class CompetitionRepositoryImpl : CompetitionRepository {
@@ -31,5 +32,10 @@ class CompetitionRepositoryImpl : CompetitionRepository {
             }
         }
         return Competitions(current, upcoming.reversed(), past)
+    }
+
+    override fun getDescription(id: String): String {
+        return Jsoup.connect("https://funcubing.org/competitions/$id")
+            .get().select("td").last()!!.html()
     }
 }

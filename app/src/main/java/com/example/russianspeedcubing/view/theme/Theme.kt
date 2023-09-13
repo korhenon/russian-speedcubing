@@ -22,13 +22,16 @@ private val LightColorScheme = lightColorScheme(
     primary = Primary,
     secondary = Secondary,
     tertiary = Tertiary,
+    // Цвет фона
     background = Color.White,
-    onPrimary = Color.Black,
+    // Цвет карточек на главном экране
     primaryContainer = LightContainer,
+    // Цвет текста
     onBackground = Color.Black,
-    surface = Color.Black,
-    surfaceTint = Color.White,
-    outline = Color.Black
+    // Цвет тени на главном экране
+    outline = Color.Black,
+    // Цвет ссылки
+    outlineVariant = LinkColor
 )
 
 @Composable

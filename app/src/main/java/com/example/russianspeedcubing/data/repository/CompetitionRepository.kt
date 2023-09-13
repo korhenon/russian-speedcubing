@@ -4,4 +4,5 @@ import com.example.russianspeedcubing.model.application.Competitions
 
 interface CompetitionRepository {
     suspend fun getCompetitions(): Competitions
+    fun getDescription(id: String): String
 }
