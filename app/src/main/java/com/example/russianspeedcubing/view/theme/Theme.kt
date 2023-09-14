@@ -31,7 +31,11 @@ private val LightColorScheme = lightColorScheme(
     // Цвет тени на главном экране
     outline = Color.Black,
     // Цвет ссылки
-    outlineVariant = LinkColor
+    outlineVariant = LinkColor,
+    // Цвет разделителей
+    surface = LightSeparator,
+    // Primary с alpha 0
+    inversePrimary = InversePrimary,
 )
 
 @Composable

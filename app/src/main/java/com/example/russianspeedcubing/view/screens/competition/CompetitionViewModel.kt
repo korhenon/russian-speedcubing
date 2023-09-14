@@ -21,12 +21,22 @@ class CompetitionViewModel @Inject constructor(
     var isLoad by mutableStateOf(true)
     var descriptionHtml by mutableStateOf("")
 
+    private var needLoad by mutableStateOf(true)
+
+    fun setup(competition: Competition) {
+        needLoad = this.competition.id != competition.id
+        this.competition = competition
+        isLoad = true
+    }
+
     fun loadDescription() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                descriptionHtml = repository.getDescription(competition.id)
-                isLoad = false
+        if (needLoad) {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    descriptionHtml = repository.getDescription(competition.id)
+                    isLoad = false
+                }
             }
-        }
+        } else isLoad = false
     }
 }

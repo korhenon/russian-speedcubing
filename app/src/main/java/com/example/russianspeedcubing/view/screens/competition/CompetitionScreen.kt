@@ -1,8 +1,6 @@
 package com.example.russianspeedcubing.view.screens.competition
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,34 +14,33 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.russianspeedcubing.R
+import com.example.russianspeedcubing.view.items.BackButton
 import com.example.russianspeedcubing.view.items.DescriptionClickableItem
 import com.example.russianspeedcubing.view.items.DescriptionLink
 import com.example.russianspeedcubing.view.items.DescriptionText
 import com.example.russianspeedcubing.view.items.html.Html
 import com.example.russianspeedcubing.view.navigation.Screens
+import com.example.russianspeedcubing.view.screens.events.EventsViewModel
 import com.example.russianspeedcubing.view.theme.robotoCondensed
 
 @Composable
 fun CompetitionScreen(
     navController: NavHostController,
     colorScheme: ColorScheme,
-    viewModel: CompetitionViewModel
+    viewModel: CompetitionViewModel,
+    eventsViewModel: EventsViewModel
 ) {
     viewModel.loadDescription()
     val competition = viewModel.competition
-    val backButtonInteractionSource = remember { MutableInteractionSource() }
     Column(
         Modifier
             .fillMaxSize()
@@ -64,13 +61,7 @@ fun CompetitionScreen(
                 modifier = Modifier.fillMaxWidth(0.7f),
                 style = TextStyle(background = colorScheme.primary)
             )
-            Image(
-                painter = painterResource(id = R.drawable.left_arrow),
-                contentDescription = "back",
-                modifier = Modifier.clickable(backButtonInteractionSource, null) {
-                    navController.navigate(Screens.Home)
-                }
-            )
+            BackButton(navController, Screens.Home)
         }
         Spacer(modifier = Modifier.height(16.dp))
         if (competition.logo != "") {
@@ -107,7 +98,8 @@ fun CompetitionScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         DescriptionClickableItem(label = "Дисциплины") {
-
+            eventsViewModel.setup(competition.id)
+            navController.navigate(Screens.Events)
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(

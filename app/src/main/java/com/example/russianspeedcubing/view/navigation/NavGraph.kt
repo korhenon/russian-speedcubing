@@ -8,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.russianspeedcubing.view.screens.competition.CompetitionScreen
 import com.example.russianspeedcubing.view.screens.competition.CompetitionViewModel
+import com.example.russianspeedcubing.view.screens.events.EventsScreen
+import com.example.russianspeedcubing.view.screens.events.EventsViewModel
 import com.example.russianspeedcubing.view.screens.home.HomeScreen
 import com.example.russianspeedcubing.view.screens.home.HomeViewModel
 
@@ -15,7 +17,8 @@ import com.example.russianspeedcubing.view.screens.home.HomeViewModel
 fun NavGraph(
     hasDefaultSplash: Boolean,
     homeViewModel: HomeViewModel,
-    competitionViewModel: CompetitionViewModel = hiltViewModel()
+    competitionViewModel: CompetitionViewModel = hiltViewModel(),
+    eventsViewModel: EventsViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     val colorScheme = MaterialTheme.colorScheme
@@ -25,7 +28,10 @@ fun NavGraph(
             HomeScreen(navController, homeViewModel, competitionViewModel, colorScheme)
         }
         composable(Screens.Competition) {
-            CompetitionScreen(navController, colorScheme, competitionViewModel)
+            CompetitionScreen(navController, colorScheme, competitionViewModel, eventsViewModel)
+        }
+        composable(Screens.Events) {
+            EventsScreen(navController, colorScheme, eventsViewModel)
         }
     }
 }

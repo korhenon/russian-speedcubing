@@ -44,8 +44,7 @@ fun ContainerShadow(
             .padding(bottom = padding)
             .border(1.dp, colorScheme.outline, RoundedCornerShape(40.dp))
             .clickable(interactionSource = interactionSource, null) {
-                competitionViewModel.competition = competition
-                competitionViewModel.isLoad = true
+                competitionViewModel.setup(competition)
                 navController.navigate(Screens.Competition)
             }
     ) {
