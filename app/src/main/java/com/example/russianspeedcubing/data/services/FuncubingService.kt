@@ -1,5 +1,6 @@
 package com.example.russianspeedcubing.data.services
 
+import com.example.russianspeedcubing.model.network.Competitor
 import com.example.russianspeedcubing.model.network.FuncubingCompetition
 import com.example.russianspeedcubing.model.network.PsychSheetItem
 import com.example.russianspeedcubing.model.network.Round
@@ -28,4 +29,7 @@ interface FuncubingService {
         @Path("id") id: String,
         @Path("event") event: String
     ): List<PsychSheetItem>
+
+    @GET("competitors")
+    suspend fun getCompetitors(): List<Competitor>
 }

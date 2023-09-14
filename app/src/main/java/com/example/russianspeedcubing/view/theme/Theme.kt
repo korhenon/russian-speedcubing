@@ -34,8 +34,12 @@ private val LightColorScheme = lightColorScheme(
     outlineVariant = LinkColor,
     // Цвет разделителей
     surface = LightSeparator,
-    // Primary с alpha 0
+    // С alpha 0
     inversePrimary = InversePrimary,
+    onSecondary = InverseSecondary,
+    // Цвет кнопок
+    secondaryContainer = ButtonColor,
+    onSecondaryContainer = Color.White,
 )
 
 @Composable

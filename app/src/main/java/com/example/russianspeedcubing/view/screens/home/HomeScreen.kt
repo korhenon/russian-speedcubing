@@ -2,7 +2,9 @@ package com.example.russianspeedcubing.view.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,6 +42,7 @@ import androidx.navigation.NavHostController
 import com.example.russianspeedcubing.R
 import com.example.russianspeedcubing.model.application.Competition
 import com.example.russianspeedcubing.view.items.ContainerShadow
+import com.example.russianspeedcubing.view.navigation.Screens
 import com.example.russianspeedcubing.view.screens.competition.CompetitionViewModel
 import com.example.russianspeedcubing.view.theme.robotoCondensed
 import com.example.russianspeedcubing.view.theme.robotoSlab
@@ -55,14 +59,21 @@ fun HomeScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = viewModel.isLoad,
         onRefresh = { viewModel.loadCompetitions() })
+    val menuInteractionSource = remember { MutableInteractionSource() }
     Box(
         Modifier
             .pullRefresh(pullRefreshState)
             .fillMaxSize()
     ) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            Column(Modifier.padding(horizontal = 20.dp)) {
-                Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(36.dp))
+            Row(
+                Modifier
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = "Соревнования",
                     fontFamily = robotoSlab,
@@ -70,8 +81,17 @@ fun HomeScreen(
                     fontWeight = FontWeight.Bold,
                     color = colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.menu),
+                    contentDescription = "menu",
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .clickable(menuInteractionSource, null) {
+                            navController.navigate(Screens.Preferences)
+                        })
             }
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Сейчас проходят
             if (viewModel.competitions.current.isNotEmpty()) {
