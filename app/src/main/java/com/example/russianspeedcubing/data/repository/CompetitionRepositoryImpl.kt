@@ -7,6 +7,7 @@ import com.example.russianspeedcubing.model.application.Competition
 import com.example.russianspeedcubing.model.application.Competitions
 import com.example.russianspeedcubing.model.application.Event
 import com.example.russianspeedcubing.model.network.PsychSheetItem
+import com.example.russianspeedcubing.model.network.FuncubingResult
 import com.example.russianspeedcubing.model.network.Round
 import org.jsoup.Jsoup
 import java.time.LocalDate
@@ -82,6 +83,10 @@ class CompetitionRepositoryImpl : CompetitionRepository {
 
     override suspend fun getPsychsheet(id: String, event: String): List<PsychSheetItem> {
         return service.getPsychsheet(id, event)
+    }
+
+    override suspend fun getResults(id: String, round: String): List<FuncubingResult> {
+        return service.getResults(id).filter { it.event_id == round }
     }
 
 }

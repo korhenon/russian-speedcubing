@@ -3,6 +3,7 @@ package com.example.russianspeedcubing.data.services
 import com.example.russianspeedcubing.model.network.Competitor
 import com.example.russianspeedcubing.model.network.FuncubingCompetition
 import com.example.russianspeedcubing.model.network.PsychSheetItem
+import com.example.russianspeedcubing.model.network.FuncubingResult
 import com.example.russianspeedcubing.model.network.Round
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,4 +33,8 @@ interface FuncubingService {
 
     @GET("competitors")
     suspend fun getCompetitors(): List<Competitor>
+
+
+    @GET("competitions/{id}/results")
+    suspend fun getResults(@Path("id") id: String): List<FuncubingResult>
 }

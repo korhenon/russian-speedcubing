@@ -12,6 +12,8 @@ import com.example.russianspeedcubing.view.screens.events.EventsScreen
 import com.example.russianspeedcubing.view.screens.events.EventsViewModel
 import com.example.russianspeedcubing.view.screens.home.HomeScreen
 import com.example.russianspeedcubing.view.screens.home.HomeViewModel
+import com.example.russianspeedcubing.view.screens.preferences.PreferencesScreen
+import com.example.russianspeedcubing.view.screens.select_fc_id.SelectFcIdScreen
 
 @Composable
 fun NavGraph(
@@ -32,6 +34,12 @@ fun NavGraph(
         }
         composable(Screens.Events) {
             EventsScreen(navController, colorScheme, eventsViewModel)
+        }
+        composable(Screens.Preferences) {
+            PreferencesScreen(navController, colorScheme)
+        }
+        composable(Screens.SelectFcId) {
+            SelectFcIdScreen(navController, colorScheme)
         }
     }
 }

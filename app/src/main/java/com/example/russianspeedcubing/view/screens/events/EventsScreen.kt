@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,10 +57,13 @@ fun EventsScreen(
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = viewModel.isLoadResults && viewModel.selectedRoundId >= 0,
-        onRefresh = { /*TODO*/ }
+        onRefresh = { viewModel.loadResults() }
     )
     viewModel.loadEvents()
     if (!viewModel.isLoadEvents) {
+        if (!viewModel.isFirstResultLoaded) {
+            viewModel.loadResults()
+        }
         Row(Modifier.fillMaxSize()) {
             Column(
                 Modifier
@@ -93,11 +97,11 @@ fun EventsScreen(
                                 viewModel.selectedRoundId = 0
                                 viewModel.selectedEventId =
                                     if (i >= viewModel.selectedEventId) i + 1 else i
+                                viewModel.loadResults()
                             },
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
-
             }
             Box(
                 modifier = Modifier
@@ -106,7 +110,7 @@ fun EventsScreen(
             ) {
                 Column(
                     Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(start = 12.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
@@ -178,6 +182,7 @@ fun EventsScreen(
                                     .padding(horizontal = 2.dp)
                                     .clickable(interactionSource, null) {
                                         viewModel.selectedRoundId = i
+                                        viewModel.loadResults()
                                     }
                             )
                             Spacer(modifier = Modifier.width(16.dp))
@@ -219,6 +224,126 @@ fun EventsScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        if (viewModel.selectedRoundResults.isNotEmpty()) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState())
+                            ) {
+                                Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+                                    Text(
+                                        text = "№",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = robotoCondensed,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    for ((i, result) in viewModel.selectedRoundResults.withIndex()) {
+                                        Text(
+                                            text = (i + 1).toString(),
+                                            textAlign = TextAlign.Center,
+                                            fontFamily = robotoCondensed,
+                                            fontSize = 12.sp,
+                                            modifier = Modifier
+                                                .background(
+                                                    if (viewModel.savedCompetitorId == result.fc_id) colorScheme.secondary
+                                                    else Color.Transparent
+                                                )
+                                                .fillMaxWidth()
+                                                .padding(top = 2.dp, bottom = 2.dp, end = 4.dp)
+                                        )
+                                    }
+                                }
+                                Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+                                    Text(
+                                        text = "Имя",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = robotoCondensed,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    for (result in viewModel.selectedRoundResults) {
+                                        Text(
+                                            text = result.name.maxSize(21),
+                                            fontFamily = robotoCondensed,
+                                            fontSize = 12.sp,
+                                            modifier = Modifier
+                                                .background(
+                                                    if (viewModel.savedCompetitorId == result.fc_id) colorScheme.secondary
+                                                    else Color.Transparent
+                                                )
+                                                .fillMaxWidth()
+                                                .padding(top = 2.dp, bottom = 2.dp, end = 12.dp)
+                                        )
+                                    }
+                                }
+                                if (viewModel.selectedEvent.id != "333mbf") {
+                                    Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+                                        Text(
+                                            text = "Среднее",
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            fontFamily = robotoCondensed,
+                                            textAlign = TextAlign.End,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(end = 12.dp)
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        for (result in viewModel.selectedRoundResults) {
+                                            Text(
+                                                text = result.average.formatAsTime(),
+                                                textAlign = TextAlign.End,
+                                                fontFamily = robotoCondensed,
+                                                fontSize = 12.sp,
+                                                modifier = Modifier
+                                                    .background(
+                                                        if (viewModel.savedCompetitorId == result.fc_id) colorScheme.secondary
+                                                        else Color.Transparent
+                                                    )
+                                                    .fillMaxWidth()
+                                                    .padding(top = 2.dp, bottom = 2.dp, end = 12.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                                Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+                                    Text(
+                                        text = "Лучшая",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        fontFamily = robotoCondensed,
+                                        textAlign = TextAlign.End,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(end = 2.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    for (result in viewModel.selectedRoundResults) {
+                                        Text(
+                                            text = result.best.formatAsTime(),
+                                            textAlign = TextAlign.End,
+                                            fontFamily = robotoCondensed,
+                                            fontSize = 12.sp,
+                                            modifier = Modifier
+                                                .background(
+                                                    if (viewModel.savedCompetitorId == result.fc_id) colorScheme.secondary
+                                                    else Color.Transparent
+                                                )
+                                                .fillMaxWidth()
+                                                .padding(top = 2.dp, bottom = 2.dp, end = 2.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                     } else {
                         Spacer(modifier = Modifier.height(16.dp))
                         if (viewModel.isLoadPsychsheet) {
@@ -239,13 +364,17 @@ fun EventsScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                for (i in 1..viewModel.selectedEvent.psychSheet.size) {
+                                for ((i, psych) in viewModel.selectedEvent.psychSheet.withIndex()) {
                                     Text(
-                                        text = i.toString(),
+                                        text = (i + 1).toString(),
                                         textAlign = TextAlign.Center,
                                         fontFamily = robotoCondensed,
                                         fontSize = 12.sp,
                                         modifier = Modifier
+                                            .background(
+                                                if (viewModel.savedCompetitorId == psych.fc_id) colorScheme.secondary
+                                                else Color.Transparent
+                                            )
                                             .fillMaxWidth()
                                             .padding(top = 2.dp, bottom = 2.dp, end = 4.dp)
                                     )
@@ -267,6 +396,10 @@ fun EventsScreen(
                                         fontFamily = robotoCondensed,
                                         fontSize = 12.sp,
                                         modifier = Modifier
+                                            .background(
+                                                if (viewModel.savedCompetitorId == psych.fc_id) colorScheme.secondary
+                                                else Color.Transparent
+                                            )
                                             .fillMaxWidth()
                                             .padding(top = 2.dp, bottom = 2.dp, end = 12.dp)
                                     )
@@ -279,7 +412,9 @@ fun EventsScreen(
                                     fontWeight = FontWeight.Medium,
                                     fontFamily = robotoCondensed,
                                     textAlign = TextAlign.End,
-                                    modifier = Modifier.fillMaxWidth().padding(end = 12.dp)
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 12.dp)
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 for (psych in viewModel.selectedEvent.psychSheet) {
@@ -289,6 +424,10 @@ fun EventsScreen(
                                         fontFamily = robotoCondensed,
                                         fontSize = 12.sp,
                                         modifier = Modifier
+                                            .background(
+                                                if (viewModel.savedCompetitorId == psych.fc_id) colorScheme.secondary
+                                                else Color.Transparent
+                                            )
                                             .fillMaxWidth()
                                             .padding(top = 2.dp, bottom = 2.dp, end = 12.dp)
                                     )
@@ -301,7 +440,9 @@ fun EventsScreen(
                                     fontWeight = FontWeight.Medium,
                                     fontFamily = robotoCondensed,
                                     textAlign = TextAlign.End,
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(end = 2.dp)
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 for (psych in viewModel.selectedEvent.psychSheet) {
@@ -311,8 +452,12 @@ fun EventsScreen(
                                         fontFamily = robotoCondensed,
                                         fontSize = 12.sp,
                                         modifier = Modifier
+                                            .background(
+                                                if (viewModel.savedCompetitorId == psych.fc_id) colorScheme.secondary
+                                                else Color.Transparent
+                                            )
                                             .fillMaxWidth()
-                                            .padding(top = 2.dp, bottom = 2.dp)
+                                            .padding(top = 2.dp, bottom = 2.dp, end = 2.dp)
                                     )
                                 }
                             }
